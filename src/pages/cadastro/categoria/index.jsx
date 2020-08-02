@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PageLayout from '../../../components/PageLayout';
 import FormField from '../../../components/FormField';
@@ -27,6 +27,19 @@ function CadastroCategoria() {
     const { name, value } = info.target;
     setDado(name, value);
   }
+
+  useEffect(() => {
+    const URL = 'http://localhost:8080/categorias';
+    fetch(URL)
+      .then(async (serverResponse) => {
+        if (serverResponse.ok) {
+          const response = await serverResponse.json();
+          setCategorias(response);
+          return;
+        }
+        throw new Error('Não foi possível obter os dados');
+      });
+  }, []);
 
   return (
     <PageLayout>
@@ -73,8 +86,8 @@ function CadastroCategoria() {
       </form>
 
       <ul>
-        {categorias.map((categoria, indice) => (
-          <li key={`${categoria.nome}${indice}`}>
+        {categorias.map((categoria) => (
+          <li key={categoria.nome}>
             {categoria.nome}
           </li>
         ))}
